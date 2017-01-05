@@ -1,9 +1,9 @@
-import time, sys
+import time, sys 
 import re, random
 from PIL import Image
 import webbrowser
 from inputCheck import InputCheck
-
+import mysql.connector
 
 
 class Hangman (object):
@@ -70,22 +70,13 @@ class Hangman (object):
   #	print i
   #	time.sleep (timeout)
 
-  def __init__(self,dicName):
+  def __init__(self):
     self.inputList=[]
-    self.dictionary = self.creatListOfWords(dicName)
     self.charList = []
     self.timeout = 5
     self.curHanman = 0
     self.numOfTry = 0
     self.win = False
-    self.dicName = dicName
-    
-
-  def randomWord(self,words):
-    randomIndex = random.randint(0,len(words)-1)
-    returnWord = words[randomIndex]
-    return returnWord
-
 
 
   def indexOfChar(self,char,chars):
@@ -97,42 +88,43 @@ class Hangman (object):
     return returnList
 
 
-  def wongame(self):
+  def wongame(self,numOfTry,charList):
+    print self.HANGMANPICS[numOfTry]
+    for i in charList:
+      print i,
+
+    print "\n"
     print "Congratulation!!! You won the game!"
     webbrowser.open('file:///Users/zzxx/Desktop/hangman/projects/skeleton/hangman/win.gif')
     self.win = True
 
+  def obtainWordsFromDataBase(self):
+    list1 = []
+    db = mysql.connector.connect(user ="root", password = "8998", host = "127.0.0.1", database = "hangman" )
+    # prepare a cursor object using cursor() method
+    cursor = db.cursor()
+    sql = "SELECT words from SIMPLEWORDS ORDER BY RAND() LIMIT 1"
+    cursor.execute(sql)
+    for i in cursor:
+      for j in i:
+        list1.append(j)
+    return list1[0]
 
-  def creatListOfWords(self,dicName):
-    "Create and return a list of words from the dicName txt provided"
-    returnList= []
-    dictionaryObj = open(dicName,'r')
-    
-    for line in dictionaryObj:
-      for word in line.split(" "):
-        returnList.append(word)
-
-    return returnList
 
 
   def main(self):
     inputList = self.inputList
-    dictionary = self.dictionary
     charList = self.charList
     timeout = self.timeout
     curHanman = self.curHanman
     numOfTry = self.numOfTry
     win = self.win
-    dicName = self.dicName
 
-    #wonGameImage = Image.open('win.gif')
-
-    dictionary =  self.creatListOfWords(dicName)
   
-    #Randomly pick a word form the dictionary, then make a list of char in the word
+    #Randomly pick a word form the database, then make a list of char in the word
     #and a matchedCharList with the size of the word
-    word = self.randomWord(dictionary)
-    #print word
+    word = self.obtainWordsFromDataBase()
+    print word
 
     marchedCharList = [None] * len(word)
    
@@ -162,7 +154,7 @@ class Hangman (object):
       answer = inputCheck.input_scan(inputList)
 
       if answer == word:
-        self.wongame()
+        self.wongame(numOfTry,charList)
         win = True
         break
       elif answer in charList or answer =="":
@@ -172,7 +164,7 @@ class Hangman (object):
           marchedCharList[j] = answer
 
           if marchedCharList == charList:
-            self.wongame()
+            self.wongame(numOfTry,charList)
             win = True
             break
       elif answer not in charList:
@@ -195,7 +187,7 @@ class Hangman (object):
 
 nextGame = 1
 while nextGame == 1:
-  hangman0 = Hangman('dictionary.txt')
+  hangman0 = Hangman()
   nextGame = hangman0.main()
 
 

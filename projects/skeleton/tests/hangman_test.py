@@ -13,11 +13,8 @@ from hangman.hangman import *
 
 def setup():
 	"Set up test fixture, run before the test function" 
-	hangman0 = Hangman('dictionary.txt')
-	hangman1 = Hangman('testing-dic.txt')
-
-	list1 = hangman0.creatListOfWords(hangman0.dicName)
-	list2 = hangman1.creatListOfWords(hangman1.dicName)
+	hangman0 = Hangman()
+	hangman1 = Hangman()
 
 
 def teardown():
@@ -31,8 +28,8 @@ def teardown():
 
 @with_setup(setup,teardown)
 def test_indexOfChar():
-	hangman0 = Hangman('dictionary.txt')
-	hangman1 = Hangman('testing-dic.txt')
+	hangman0 = Hangman()
+	hangman1 = Hangman()
 
 	list1 = []
 	list2 = ['h','e','l','l','o']
@@ -67,34 +64,9 @@ def test_indexOfChar():
  	assert_is_not_none(list6[1])
  	assert_is_not_none(list6[5])
 
-
-
-def test_randomWord():
-	hangman0 = Hangman('dictionary.txt')
-	hangman1 = Hangman('testing-dic.txt')
-
-	list1 = hangman0.creatListOfWords(hangman0.dicName)
-	list2 = hangman1.creatListOfWords(hangman1.dicName)
-	dictionary = hangman0.dictionary
-	
-	word = hangman0.randomWord(dictionary)
-	assert_in (word, list1)
-
-	word1 = hangman1.randomWord(dictionary)
-	assert_in(word1,list1)
-
-	word2 = "where"
-	word3 = "student" 
-	word4 = 000
-
-	assert_not_in(word3,dictionary)
-	assert_not_in(word4,dictionary)
-	assert_in (word2,dictionary)
-	print "randomWord Test is don"
-
 def test_win():
-	hangman0 = Hangman('dictionary.txt')
-	hangman1 = Hangman('testing-dic.txt')
+	hangman0 = Hangman()
+	hangman1 = Hangman()
 
 	assert_false(hangman0.win)
 	hangman0.win = True
