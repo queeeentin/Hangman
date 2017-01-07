@@ -1,6 +1,6 @@
 import mysql.connector
 import urllib2
-import json
+import json, os
 from urllib2 import Request   
 
 try:
@@ -38,17 +38,17 @@ except:
 	cwd = os.getcwd()
 	fileObject = open(cwd + "/hangman/wordList.txt", 'w+r')
 	for i in wordList:
-		fileObject.write(i)
+		fileObject.write(i + " ")
+else:
+	cursor = db.cursor()
+	for i in wordList:
+		sql = """INSERT INTO SIMPLEWORDS (words) VALUE ('%s') """ % (i)
+		cursor.execute(sql)
+		db.commit()
+	cursor.close()
+	db.close()
 
 # prepare a cursor object using cursor() method
-cursor = db.cursor()
 
-for i in wordList:
-	sql = """INSERT INTO SIMPLEWORDS (words) VALUE ('%s') """ % (i)
-	cursor.execute(sql)
-	db.commit()
-
-cursor.close()
-db.close()
 
 
