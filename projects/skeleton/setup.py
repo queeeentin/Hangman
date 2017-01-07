@@ -1,4 +1,7 @@
 import mysql.connector
+import urllib2
+import json
+from urllib2 import Request   
 
 try:
 	from setuptools import setup
@@ -18,6 +21,15 @@ config = {
 	'name': 'Hangma'
 }
 
+response = urllib2.urlopen("https://raw.githubusercontent.com/first20hours/google-10000-english/master/google-10000-english-usa-no-swears-medium.txt")
+       #Gets an array of bytes!
+
+wordList = []
+
+
+for i in response.readlines():
+	wordList.append(str(i).rstrip('\n'))
+
 #setup (**config)
 #Open database connection
 db = mysql.connector.connect(user ="root", password = "8998", host = "127.0.0.1", database = "hangman" )
@@ -26,9 +38,7 @@ db = mysql.connector.connect(user ="root", password = "8998", host = "127.0.0.1"
 # prepare a cursor object using cursor() method
 cursor = db.cursor()
 
-words = [ "verification","presence","envelope","example","science","newspaper","greeting", "puddle", "sound", "where", "take", "help", "does", "only", "through", "another", "little", "much", "work", "before", "large", "know", "line", "must", "place", "right", "big", "year", "teacher", "evening", "livingroom", "meaning", "schema", "methology", "oxygen", "because", "honour", "turtle", "general", "wireless", "therefore", "mostly", "teller", "whatever", "whenever", "boyfriend", "address", "afterward", "follow", "default", "information", "teriyaki", "menu", "ourselves", "warning", "reduce", "justify", "shower", "needle", "nasty", "altitude", "landscape", "classification", "surroudings", "differential", "sentence", "formation", "homesick", "thread", "disgusting", "smell", "motivation", "tremendous", "handicap", "picture", "against", "chance", "suitcase", "spelling", "airline", "spirit", "animal", "house", "point", "plagiarism", "letter", "mother", "answer", "found", "study", "still", "learn", "should", "america", "earchquake", "designer", "interview", "intervial", "interesting", "tsunami"]
-
-for i in words:
+for i in wordList:
 	sql = """INSERT INTO SIMPLEWORDS (words) VALUE ('%s') """ % (i)
 	cursor.execute(sql)
 	db.commit()

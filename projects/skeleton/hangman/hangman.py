@@ -1,4 +1,4 @@
-import time, sys 
+import time, sys, os
 import re, random
 from PIL import Image
 import webbrowser
@@ -77,6 +77,7 @@ class Hangman (object):
     self.curHanman = 0
     self.numOfTry = 0
     self.win = False
+    self.cwd  = os.path.dirname(os.path.realpath(__file__))
 
 
   def indexOfChar(self,char,chars):
@@ -95,7 +96,7 @@ class Hangman (object):
 
     print "\n"
     print "Congratulation!!! You won the game!"
-    webbrowser.open('file:///Users/zzxx/Desktop/hangman/projects/skeleton/hangman/win.gif')
+    webbrowser.open("file://" + self.cwd +"/win.gif")
     self.win = True
 
   def obtainWordsFromDataBase(self):
@@ -120,11 +121,18 @@ class Hangman (object):
     numOfTry = self.numOfTry
     win = self.win
 
-  
-    #Randomly pick a word form the database, then make a list of char in the word
-    #and a matchedCharList with the size of the word
-    word = self.obtainWordsFromDataBase()
-    print word
+    word = ""
+    
+
+    if os.path.exists("wordList.txt"):
+      fileObject = open("wordList.txt","r")
+      data = fileObject.read()
+      wordList = data.split(" ")
+      word = wordList[random.randint(0,len(wordList))]
+    else:
+      word = self.obtainWordsFromDataBase()
+      #Randomly pick a word form the database, then make a list of char in the word
+      #and a matchedCharList with the size of the word
 
     marchedCharList = [None] * len(word)
    
@@ -174,7 +182,7 @@ class Hangman (object):
       print self.HANGMANPICS[len(self.HANGMANPICS)-1]
       print "Unfortunatly, you have lost the game.", 
       print "The correct answer is:", word
-      webbrowser.open("file:///Users/zzxx/Desktop/hangman/projects/skeleton/hangman/death.gif")
+      webbrowser.open("file://" + self.cwd +"/death.gif")
 
     print "Type yes/no to try again or to exit"
     tryAgain = raw_input()
