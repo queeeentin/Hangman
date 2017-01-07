@@ -32,8 +32,13 @@ for i in response.readlines():
 
 #setup (**config)
 #Open database connection
-db = mysql.connector.connect(user ="root", password = "8998", host = "127.0.0.1", database = "hangman" )
-
+try: 
+	db = mysql.connector.connect(user ="root", password = "8998", host = "127.0.0.1", database = "hangman" )
+except:
+	cwd = os.getcwd()
+	fileObject = open(cwd + "/hangman/wordList.txt", 'w+r')
+	for i in wordList:
+		fileObject.write(i)
 
 # prepare a cursor object using cursor() method
 cursor = db.cursor()
