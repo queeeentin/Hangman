@@ -1,6 +1,6 @@
 import mysql.connector
 import urllib2
-import json, os
+import json, os, sys, subprocess
 from urllib2 import Request   
 
 try:
@@ -30,10 +30,16 @@ wordList = []
 for i in response.readlines():
 	wordList.append(str(i).rstrip('\n'))
 
+bashCommand = "chmod u+rx shell.sh"
+process = subprocess.Popen(bashCommand.split(), stdout = subprocess.PIPE)
+output, error = process.communicate()
+command = "./shell.sh -u %s -p %s" % ( sys.argv[1], sys.argv[2])
+subprocess.call(command, shell=True)
+
 #setup (**config)
 #Open database connection
 try: 
-	db = mysql.connector.connect(user ="root", password = "8998", host = "127.0.0.1", database = "hangman" )
+	db = mysql.connector.connect(user =sys.argv[1], password = sys.argv[2], host = "127.0.0.1", database = "hangman" )
 except:
 	cwd = os.getcwd()
 	fileObject = open(cwd + "/hangman/wordList.txt", 'w+r')
