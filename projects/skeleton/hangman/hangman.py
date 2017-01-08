@@ -5,6 +5,9 @@ import webbrowser
 from inputCheck import InputCheck
 import mysql.connector
 
+#Global variables for statistical purposes
+stat_numGameRounds = 0.0
+stat_numWinCount = 0.0
 
 class Hangman (object):
 
@@ -77,8 +80,7 @@ class Hangman (object):
     self.curHanman = 0
     self.numOfTry = 0
     self.win = False
-    self.cwd  = os.path.dirname(os.path.realpath(__file__))
-
+    self.cwd = os.path.dirname(os.path.realpath(__file__))
 
   def indexOfChar(self,char,chars):
     returnList = []
@@ -87,7 +89,6 @@ class Hangman (object):
         returnList.append(index)
 
     return returnList
-
 
   def wongame(self,numOfTry,charList):
     print self.HANGMANPICS[numOfTry]
@@ -101,7 +102,7 @@ class Hangman (object):
 
   def obtainWordsFromDataBase(self):
     list1 = []
-    db = mysql.connector.connect(user ="root", password = "8998", host = "127.0.0.1", database = "hangman" )
+    db = mysql.connector.connect(user ="root", password = "qq", host = "127.0.0.1", database = "hangman" )
     # prepare a cursor object using cursor() method
     cursor = db.cursor()
     sql = "SELECT words from SIMPLEWORDS ORDER BY RAND() LIMIT 1"
@@ -120,9 +121,11 @@ class Hangman (object):
     curHanman = self.curHanman
     numOfTry = self.numOfTry
     win = self.win
+    global stat_numGameRounds
+    global stat_numWinCount
+    stat_numGameRounds += 1.0
 
     word = ""
-    
 
     if os.path.exists("wordList.txt"):
       fileObject = open("wordList.txt","r")
@@ -134,16 +137,15 @@ class Hangman (object):
       #Randomly pick a word form the database, then make a list of char in the word
       #and a matchedCharList with the size of the word
 
-    marchedCharList = [None] * len(word)
+    matchedCharList = [None] * len(word)
    
     for i in word:
       charList.append(i)
 
-
     while numOfTry < 6 and win != True:
       print self.HANGMANPICS[numOfTry]
       
-      for i in marchedCharList:
+      for i in matchedCharList:
         if i != None:
           print i,
         else:
@@ -154,7 +156,6 @@ class Hangman (object):
       print "Please enter a letter to guess or what you think this word would be."
       
       answer = raw_input(">")
-      
 
       inputCheck = InputCheck(answer)
 
@@ -163,17 +164,21 @@ class Hangman (object):
 
       if answer == word:
         self.wongame(numOfTry,charList)
+        #The user has won the round of hangman
         win = True
+        stat_numWinCount += 1.0
         break
       elif answer in charList or answer =="":
         indexesOfChar = self.indexOfChar(answer,charList)
 
         for j in indexesOfChar:
-          marchedCharList[j] = answer
+          matchedCharList[j] = answer
 
-          if marchedCharList == charList:
+          if matchedCharList == charList:
             self.wongame(numOfTry,charList)
+            #The user has won the round of hangman
             win = True
+            stat_numWinCount += 1.0
             break
       elif answer not in charList:
         numOfTry += 1
@@ -190,22 +195,13 @@ class Hangman (object):
     if tryAgain in ["yes", "y"]:
       return 1
     elif tryAgain  in ["no", "n"]:
+      winrate = (stat_numWinCount/stat_numGameRounds)
+      print "Your win rate is: " , winrate
       return 0
       
-
+      
 nextGame = 1
 while nextGame == 1:
   hangman0 = Hangman()
   nextGame = hangman0.main()
-
-
-  
-
-
-
-
-
-
-
-
 
