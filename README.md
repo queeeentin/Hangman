@@ -1,7 +1,7 @@
 #Simple Hangman Game
 
 #About this project
-Hangman is an interactive single-user word guessing game. Winning and losing conditions are animated. Winrate data are given at the end of game session. Our simple game runs on Mac OSX bash command line.
+Hangman is an interactive single-user word guessing game. Winning and losing conditions are animated. Win rate data are given at the end of game session. Our simple game runs on Mac OSX bash command line.
 
 #Dependencies
 This project requires at least Python version 2.7.10 pre-installed.
