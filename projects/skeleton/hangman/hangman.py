@@ -1,6 +1,5 @@
 import time, sys, os
 import re, random
-from PIL import Image
 import webbrowser
 from inputCheck import InputCheck
 import mysql.connector
@@ -101,7 +100,7 @@ class Hangman (object):
 
   def obtainWordsFromDataBase(self):
     list1 = []
-    db = mysql.connector.connect(user ="root", password = "8998", host = "127.0.0.1", database = "hangman" )
+    db = mysql.connector.connect(user ="root", password = "Qo6043608998!", host = "127.0.0.1", database = "hangman" )
     # prepare a cursor object using cursor() method
     cursor = db.cursor()
     sql = "SELECT words from SIMPLEWORDS ORDER BY RAND() LIMIT 1"
